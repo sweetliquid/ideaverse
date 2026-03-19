@@ -7,17 +7,34 @@ description: Work with Ideaverse-based Obsidian vaults using the ACE framework (
 
 Apply the ACE framework (Atlas/Calendar/Efforts), LYT (Linking Your Thinking) conventions, and the ARC workflow (Add/Relate/Communicate) to organize and connect knowledge.
 
-## Core Framework: ACE
+## Core Framework: ACE + Extras
 
-**ACE** organizes all content by **intention**, not topic:
+**ACE** organizes all content by **intention**, not topic. The fourth folder, `+ Extras/`, provides operational infrastructure:
 
 | Folder | Purpose | Question It Answers | Orientation |
 |--------|---------|---------------------|--------------|
 | **Atlas/** | Permanent, reusable knowledge | "What do I know?" | Space (relatedness) |
 | **Calendar/** | Temporal records, when things happened | "When did this happen?" | Time (reflection) |
 | **Efforts/** | Active work, goals, and projects | "What am I working on?" | Action (importance) |
+| **+ Extras/** | Templates, attachments, system config | "What supports my vault?" | Infrastructure |
 
 Separate project-specific material (Efforts/) from permanent knowledge (Atlas/). When a concept has reuse value beyond its originating project, extract it to Atlas/ and link back.
+
+### + Extras/ — The Support Layer
+
+The `+ Extras/` folder holds everything that supports the vault but isn't knowledge, calendar, or project content. The `+` prefix sorts it below ACE folders alphabetically in Obsidian's file explorer, keeping the three core folders visually prominent.
+
+Typical contents:
+
+| Subfolder | Purpose |
+|-----------|---------|
+| `Templates/` | Note templates (daily log, MOC, person, etc.) |
+| `Attachments/` | Images, PDFs, and media files |
+| `Bases/` | Obsidian Base files (`.base`) |
+| `Canvases/` | Canvas files (`.canvas`) |
+| `Utilities/` | Utility notes, dataview queries, CSS snippet references |
+
+**Rule**: Nothing in `+ Extras/` is a "note" in the knowledge sense. If you wouldn't link to it from an MOC or reference it as knowledge, it belongs in Extras.
 
 ## The ARC Workflow
 
