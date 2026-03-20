@@ -232,6 +232,28 @@ Before creating any new note, check for existing coverage.
 
 ### Search Strategy
 
+**Preferred (when vault search tools are available):**
+
+Use keyword search for exact title matching:
+```bash
+# Exact title/name match
+qmd search "concept name"
+```
+
+Use semantic search for conceptual near-duplicates:
+```bash
+# Find notes discussing similar ideas, even with different titles
+qmd query "what is [concept] and how does it apply"
+```
+
+Use graph tools to check existing coverage:
+```bash
+# Check what already links to related concepts
+obsidian backlinks file="Related Concept"
+```
+
+**Fallback (any environment):**
+
 ```
 1. Exact match search
    └── Search: [[concept name]]

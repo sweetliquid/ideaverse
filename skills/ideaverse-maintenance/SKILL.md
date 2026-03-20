@@ -16,6 +16,35 @@ Run audits, diagnostics, and maintenance workflows to keep Ideaverse-based Obsid
 
 ### Quick Health Check
 
+**Preferred (when Obsidian CLI is available):**
+
+Obsidian CLI provides native graph diagnostics that are faster and more accurate than script-based analysis:
+
+```bash
+# Orphan notes (no incoming links)
+obsidian orphans
+obsidian orphans total
+
+# Dead-end notes (no outgoing links)
+obsidian deadends
+obsidian deadends total
+
+# Unresolved links (broken wikilinks)
+obsidian unresolved
+obsidian unresolved total
+
+# Backlinks for a specific note
+obsidian backlinks file="Note Name"
+```
+
+Use semantic search to suggest connections for orphan notes:
+```bash
+# Find related content for an orphan note
+qmd query "summary of the orphan note content"
+```
+
+**Fallback (Python scripts):**
+
 Run these in sequence for a complete vault audit. Scripts can be invoked directly (if executable) or via `python3`:
 
 ```bash
