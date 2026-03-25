@@ -33,7 +33,7 @@ All knowledge enrichment follows the ARC pattern: **Add → Relate → Communica
 This is where enrichment quality is determined.
 
 ```
-Step 2.1: Search Before Creating
+Step 2.1: Search Before Creating (use vault search tools - see Duplicate Detection)
     ↓
     ├── Search for existing notes on this concept
     ├── Check related MOCs for similar ideas
@@ -233,6 +233,8 @@ Before creating any new note, check for existing coverage.
 ### Search Strategy
 
 **Preferred (when vault search tools are available):**
+
+Default to vault-native search tools (e.g., QMD) for deduplication. They are indexed and faster than filesystem grep or general-purpose search. Only fall back to filesystem search if vault search tools are unavailable or return errors.
 
 Use keyword search for exact title matching:
 ```bash
