@@ -1,176 +1,116 @@
-# Ideaverse Workflows
+# Ideaverse Lite 1.5 Workflows
 
-The core workflow methodology for Ideaverse-based vaults: ARC (Add → Relate → Communicate).
+These workflows adapt ARC (Add -> Relate -> Communicate) to the Lite 1.5 folder layout.
 
 ## Table of Contents
 
-1. [The ARC Workflow](#the-arc-workflow)
-2. [Creating and Evolving MOCs](#creating-and-evolving-mocs)
-3. [Daily Log Maintenance](#daily-log-maintenance)
-4. [Work Completion & Knowledge Extraction](#work-completion--knowledge-extraction)
-5. [Cross-Reference Discovery](#cross-reference-discovery)
+1. [Capture](#capture)
+2. [Process the + Inbox](#process-the--inbox)
+3. [Create Durable Atlas Notes](#create-durable-atlas-notes)
+4. [Create and Evolve MOCs](#create-and-evolve-mocs)
+5. [Maintain Calendar Notes](#maintain-calendar-notes)
+6. [Manage Efforts](#manage-efforts)
+7. [Cross-Reference Discovery](#cross-reference-discovery)
 
----
+## Capture
 
-## The ARC Workflow
+Goal: get information into the vault without forcing a permanent structure too early.
 
-The complete ADD → RELATE → COMMUNICATE cycle for knowledge management.
+Use this placement order:
 
-### Phase 1: ADD (Capture)
+1. If the note is about today, a meeting, a log, or a timestamped event, use `Calendar`.
+2. If the placement is unclear, use `+`.
+3. If it is clearly durable knowledge with an obvious parent map, create it in `Atlas/Dots`.
+4. If it is clearly active work, create or update an `Efforts` note.
 
-**Goal**: Get information into the system without friction.
+Do not use `x` for captured knowledge. `x` is for support files such as templates and images.
 
-```
-Input arrives (article, idea, meeting notes, inspiration, etc.)
-    ↓
-Capture to:
-    - Today's Daily Log (temporal record)
-    - Direct note if immediate capture
-    - Fleeting notepad (if available)
-    ↓
-Mark with tentative status (draft if using status field)
-    ↓
-Do NOT organize yet - avoid decision fatigue
-```
+## Process the `+` Inbox
 
-**Key Principle**: Speed and capture matter. Organization happens later.
+The `+` folder is the Add cooling pad. Process it periodically.
 
-### Phase 2: RELATE (Connect)
+For each item:
 
-**Goal**: Transform raw capture into connected knowledge.
+1. Read the note and identify what it really is.
+2. Search the vault for existing notes with the same idea.
+3. Choose one outcome:
+   - move to `Calendar` if it is time-bound
+   - move to `Atlas/Dots/Things` if it is a reusable concept or method
+   - move to `Atlas/Dots/Statements` if it is a claim or proposition
+   - move to `Atlas/Dots/Sources` if it is a source
+   - move to `Efforts/Notes` or an effort status folder if tied to active work
+   - delete if it no longer has value
+4. Add or update frontmatter after moving.
+5. Link it from a relevant map if it has durable value.
 
-**Step 2.1: Search Before Creating**
+If still unsure, leave it in `+` and add a short note explaining what decision remains.
 
-```
-Search vault for existing notes on the concept
-    ↓
-If found → Update existing note, add new information
-If not found → Continue to Step 2.2
-```
+## Create Durable Atlas Notes
 
-**Step 2.2: Read Relevant MOCs**
+Use this flow for stable knowledge:
 
-```
-Identify the domain or subject area
-    ↓
-Read relevant MOC(s) in your vault
-    - Understand existing structure
-    - Note related concepts already captured
-    - Identify where new concept fits
-```
+1. Search before creating.
+2. Read likely parent maps in `Atlas/Maps`.
+3. Decide the Atlas subfolder:
+   - `Atlas/Maps` for MOCs, views, navigation hubs
+   - `Atlas/Dots/Things` for reusable concepts, methods, definitions
+   - `Atlas/Dots/Statements` for claim-like evergreen notes
+   - `Atlas/Dots/Sources` for external sources
+   - `Atlas/Dots/People` for people
+4. Create a clear title.
+5. Add Lite 1.5 frontmatter.
+6. Add the note to the relevant MOC or collection when appropriate.
+7. Add meaningful links to related notes.
 
-**Step 2.3: Extract Atomic Notes**
+### Atomic Note Shape
 
-```
-For each distinct concept in the capture:
-    ↓
-Create ONE note with:
-    - Single focused idea
-    - Proper frontmatter (up, related, created)
-    - Clear, descriptive title
-    ↓
-Place in appropriate location (Atlas, Calendar, or work area)
-```
+```markdown
+# [Clear Note Title]
 
-**Step 2.4: Set Relationship Properties**
+One or two sentences that state the core idea.
 
-```
-For each new note, add frontmatter:
-    ↓
-up: property pointing to parent MOC:
-    up:
-      - "[[Parent MOC]]"
-    ↓
-related: property for lateral connections:
-    related:
-      - "[[Related Concept A]]"
-      - "[[Related Concept B]]"
-    ↓
-Update the MOC to include the new note
-    ↓
-Check related notes - add forward links if relevant
+## Notes
+
+- Supporting detail.
+- Important context.
+
+## Connections
+
+- [[Related Note]] - why it matters.
 ```
 
-**Step 2.5: Squeeze Point Check**
+Keep the shape flexible. Match existing local style when editing existing notes.
 
-```
-Count how many notes link to an unstructured term
-    ↓
-If > 10 links without an MOC → Create a new MOC for that term
-If < 10 → Continue, structure will emerge naturally
-```
+## Create and Evolve MOCs
 
-### Phase 3: COMMUNICATE (Express)
+MOCs and Views live in `Atlas/Maps`.
 
-**Goal**: Use connected knowledge to produce output.
+Create a MOC when:
 
-```
-Create output note or project artifact
-    ↓
-Link (don't copy) from existing notes:
-    - Use transclusion: ![[Note Name]] to embed content
-    - Or standard links: [[Note Name]] to reference
-    ↓
-Assemble output from connected thoughts
-    ↓
-When work completes → Extract reusable knowledge back to permanent store
-```
+- the user explicitly asks for one
+- a topic has about 10 related notes and no useful navigation
+- repeated search/navigation friction shows a real squeeze point
+- an existing map is too broad and needs a child map
 
----
-
-## Creating and Evolving MOCs
-
-Maps of Content are the navigation layer. Create them at the right time - not too early, not too late.
-
-### When to Create an MOC
-
-**The Mental Squeeze Point**: Create an MOC when:
-
-- You have 10+ notes on a topic with no structure
-- You feel overwhelmed navigating a concept area
-- You're linking to the same term repeatedly
-
-**Do NOT create an MOC**:
-
-- Preemptively for empty categories
-- For topics with < 5 related notes
-- Just to mirror an external taxonomy
-
-**Principle**: Structure should be earned, not pre-built.
+Do not create empty taxonomy maps just because a category could exist.
 
 ### MOC Creation Procedure
 
-```
-1. Identify the concept needing structure
-    ↓
-2. Search vault for all related notes
-    - Wikilink search: [[concept
-    - Text search for mentions
-    - Browse related areas
-    ↓
-3. Create MOC file
-    - Title: "[Concept] MOC" (e.g., "Programming MOC")
-    - Frontmatter with up: and in: properties
-    ↓
-4. Group related notes by sub-theme
-    - Use ## headers for categories
-    - Add brief descriptions
-    ↓
-5. Add links to all relevant notes
-    - Include short context where helpful
-    ↓
-6. Update linked notes' frontmatter
-    - Add MOC to their up: property
-```
+1. Search for related notes.
+2. Read neighboring maps.
+3. Create the map in `Atlas/Maps`.
+4. Use `in: ["[[Maps]]"]`.
+5. Group links under simple headings.
+6. Add short context after links when useful.
+7. Update child notes' `up` property only when this map is their parent context.
 
-### MOC Structure Template
+### MOC Template
 
 ```yaml
 ---
 up:
-  - "[[Home]]"  # or appropriate parent
-related:
-  - "[[Related MOC]]"
+  - "[[Home]]"
+related: []
 created: YYYY-MM-DD
 in:
   - "[[Maps]]"
@@ -178,171 +118,117 @@ in:
 ```
 
 ```markdown
-# [Concept] MOC
+# [Topic] Map
 
-Brief description of what this MOC covers and why it matters.
+Briefly describe what this map helps navigate.
 
-## [Sub-theme 1]
-- [[Note A]] - brief context
+## Core Notes
+
+- [[Note A]] - short context.
 - [[Note B]]
 
-## [Sub-theme 2]
-- [[Note C]]
-- [[Note D]] - brief context
+## Related Areas
+
+- [[Related Map]]
 ```
 
-### Evolving Existing MOCs
+### View Template
 
-```
-When adding a note to an existing MOC:
-    ↓
-1. Read the MOC structure first
-2. Identify the correct section
-3. Add the link with context if needed
-4. If no section fits → Consider adding a new section
-5. If MOC is growing (50+ links) → Consider splitting into sub-MOCs
-```
+Use a View when the main value is a dynamic Dataview/search result.
 
+```yaml
 ---
-
-## Daily Log Maintenance
-
-The daily log is the temporal anchor - everything that happens "today" goes here.
-
-### Creating Today's Log
-
-```
-1. Create file: Calendar/Days/YYYY-MM-DD.md
-2. Add basic frontmatter with created: date
-3. Fill with daily content
-```
-
-### What Goes in Daily Logs
-
-| Include | Don't Include |
-|---------|---------------|
-| Achievements and progress | Permanent knowledge (extract to Atlas) |
-| Decisions made | Detailed how-to guides (extract to Atlas) |
-| Meeting summaries | Long-form content (extract to Atlas) |
-| Ideas and sparks (to process later) | |
-| Links to notes created/updated | |
-| Blockers and next steps | |
-
-### End of Day Review
-
-```
-Before closing the day:
-    ↓
-1. Review captured items
-    - Any fleeting notes to process? → Mark for RELATE workflow
-    - Any decisions to document? → Link to relevant notes
-    ↓
-2. Add links throughout the log
-    - Link to people mentioned: [[Person Name]]
-    - Link to projects/topics worked on: [[Topic]]
-    - Link to concepts discussed: [[Concept]]
-    ↓
-3. Set priorities for tomorrow
-    - Add to "Next Steps" section
-    - Update any project/work lists as needed
-```
-
+up:
+  - "[[Home]]"
+related:
+  - "[[Maps]]"
+created: YYYY-MM-DD
+in:
+  - "[[Views]]"
 ---
-
-## Work Completion & Knowledge Extraction
-
-When a project or initiative completes, extract reusable knowledge before archiving.
-
-### Knowledge Extraction Checklist
-
-```
-Before closing/archiving work:
-    ↓
-1. IDENTIFY reusable knowledge
-    - Processes that worked well
-    - Concepts and frameworks learned
-    - Decisions made and their rationale
-    - Useful templates or artifacts
-    ↓
-2. EXTRACT to permanent store
-    For each reusable item:
-        - Create atomic note
-        - Add proper frontmatter (up, related, created)
-        - Link back to original work
-        - Add to relevant MOC
-    ↓
-3. CREATE completion summary
-    - What was accomplished
-    - Key learnings (linked to extraction notes)
-    - What worked and what didn't
-    ↓
-4. UPDATE references
-    - Remove from active work lists
-    - Archive the work container
-    - Ensure MOCs still link to extracted knowledge
 ```
 
-### Post-Completion Access
+## Maintain Calendar Notes
 
-Archived work remains searchable and linkable. The reusable knowledge lives on in the permanent store; the work folder is just the historical container.
+Calendar holds timestamped notes. Preserve the vault's current Daily Notes or Periodic Notes configuration instead of inventing a new folder such as `Calendar/Days`.
 
+Good Calendar content:
+
+- daily notes
+- meeting notes
+- workout or tracking notes
+- logs
+- dated planning and review
+- decisions made on a specific day
+- links to notes created or updated that day
+
+Extract durable knowledge out of Calendar into Atlas when it becomes reusable.
+
+### Daily Note Shape
+
+Use the vault's template if configured. The Lite 1.5 kit template is simple:
+
+```yaml
 ---
+created: YYYY-MM-DD
+---
+```
+
+```markdown
+## Freewrite
+
+## Big Things Today
+
+## Log
+```
+
+## Manage Efforts
+
+Use Efforts for work that has action, priority, or responsibility.
+
+Placement:
+
+- `Efforts/On`: active focused work
+- `Efforts/Ongoing`: ongoing responsibilities
+- `Efforts/Simmering`: background work
+- `Efforts/Sleeping`: paused work
+- `Efforts/Notes`: supporting material for efforts
+
+When creating an effort:
+
+1. Choose the intensity folder.
+2. Use `up: ["[[Efforts]]"]`.
+3. Add `rank` if the Efforts view should sort it.
+4. Link supporting notes.
+5. Keep reusable ideas in Atlas and link them from the effort.
+
+When completing or pausing an effort:
+
+1. Add a short summary.
+2. Extract reusable knowledge into Atlas.
+3. Move the effort to the appropriate folder.
+4. Update the `[[Efforts]]` map only if needed.
 
 ## Cross-Reference Discovery
 
-After adding or updating content, proactively find and create connections.
+After creating or updating a note:
 
-### Discovery Procedure
+1. Identify key concepts, people, sources, and efforts mentioned.
+2. Search for existing notes by exact title and likely aliases.
+3. Add useful links from the new note.
+4. Add a backlink or MOC entry only when it improves navigation.
+5. If a term appears repeatedly without a map, consider a future MOC.
 
-```
-After creating/updating a note:
-    ↓
-1. IDENTIFY key terms in the note
-    - Concepts, entities, themes
-    ↓
-2. SEARCH for related notes
-    - Wikilink search: [[term
-    - Text search: "term"
-    - Check MOCs in related areas
-    ↓
-3. For each meaningful match:
-    - Add link FROM new note TO existing note
-    - Add back-link FROM existing note TO new note
-    ↓
-4. UPDATE MOCs
-    - If new note fits an existing MOC → Add it
-    - If MOC should reference this note → Update it
-```
+Avoid link spam. A link should help a future reader move through the vault.
 
-### When to Add Back-References
+## Safety Checklist
 
-Add a back-reference when:
+Before making structural changes:
 
-- The existing note would benefit from knowing about the new note
-- Future readers of the existing note should discover the new concept
-- There's a genuine conceptual relationship
-
-Do NOT add back-references for:
-
-- Superficial keyword matches
-- Every note that mentions the same word
-- References that add no navigational value
-
-### Maintenance Sweeps
-
-Periodically (weekly, monthly, or quarterly):
-
-```
-1. Review orphan notes (no incoming links)
-    - Should they be linked? → Add connections
-    - Are they still relevant? → Archive or consolidate
-    ↓
-2. Review MOCs for completeness
-    - Any new notes missing? → Add them
-    - Any dead links? → Fix or remove
-    ↓
-3. Check for emergent patterns
-    - Topics with many unstructured notes → Create MOC
-    - Duplicate concepts → Merge notes
-    - Over-crowded MOCs → Split into sub-MOCs
-```
+- Search first.
+- Do not rename, delete, or reorganize kit/example notes unless explicitly asked.
+- Do not create `+ Extras`.
+- Do not put support files in `+`.
+- Do not put raw atomic notes in `Atlas/Maps`.
+- Preserve existing frontmatter style when editing existing notes.
+- If unsure, capture in `+` and explain what remains ambiguous.

@@ -1,138 +1,203 @@
-# Frontmatter Reference: Core Ideaverse
+# Frontmatter Reference: Ideaverse Lite 1.5
 
-This defines the standard frontmatter properties for Ideaverse-based vaults following LYT (Linking Your Thinking) conventions.
+Ideaverse Lite 1.5 uses YAML frontmatter for navigation, relationship, and Dataview collection membership. The 1.5 release shifted collection logic toward properties, especially `in`, instead of relying on tags.
 
-## Core Relationship Properties
+## Core Properties
 
-These properties express how notes connect within your vault:
+### `up`
 
-### `up:` - Parent Links
-
-Points to the parent note(s) in the hierarchy. Use for the note this one "belongs under."
+Parent map or parent context. Use the note this one belongs under.
 
 ```yaml
 up:
-  - "[[Home]]"
+  - "[[Meta PKM]]"
 ```
 
-Or multiple parents (rare, but valid):
+Most notes should have `up`. Root notes such as `Home` may omit it. Draft or unprocessed notes can use `up: []` until processed.
 
-```yaml
-up:
-  - "[[Library]]"
-  - "[[Psychology MOC]]"
-```
+### `related`
 
-**Rule**: Every note except root notes (Home) should have an `up:` property.
-
-### `related:` - Lateral Links
-
-Notes that are conceptually related but NOT in a parent/child relationship.
+Lateral links that are useful but not parent/child relationships.
 
 ```yaml
 related:
-  - "[[Similar Concept]]"
+  - "[[Adjacent Idea]]"
   - "[[Contrasting Idea]]"
 ```
 
-Can be empty:
+Use an empty array when there are no known lateral links:
 
 ```yaml
 related: []
 ```
 
-### `in:` - Collection Membership (Optional)
+### `created`
 
-Declares membership in a collection. Commonly used to identify MOCs:
+Creation date in `YYYY-MM-DD`.
+
+```yaml
+created: 2026-05-01
+```
+
+### `in`
+
+Collection membership. In Lite 1.5 this powers many Dataview collection notes.
 
 ```yaml
 in:
   - "[[Maps]]"
 ```
 
-### `down:` - Child Links (Optional)
+Common collection links:
 
-Points to child notes. Less commonly used since `up:` creates implicit reciprocal relationships.
+- `[[Maps]]`
+- `[[Views]]`
+- `[[Sources]]`
+- `[[Books]]`
+- `[[Movies]]`
+- `[[Papers]]`
+- `[[Concepts]]`
+- `[[Efforts]]`
+- `[[Meta PKM]]`
 
-```yaml
-down:
-  - "[[Sub-concept A]]"
-  - "[[Sub-concept B]]"
-```
+Use the collection notes that actually exist in the vault.
 
-## Required Metadata
+### Other Properties
 
-### `created:` - Creation Date
+Use existing vault conventions when present:
 
-Simple date in YYYY-MM-DD format.
+- `rank`: priority ordering, especially for Efforts.
+- `version`: kit/version notes.
+- `modified`: manually maintained modified date when the note already uses it.
+- `tags`: keep existing tags such as `x/readme`, but do not use tags as the primary Lite 1.5 collection mechanism.
+- source-specific fields such as `year` or `encountered`.
 
-```yaml
-created: 2026-01-22
-```
+## Examples
 
-## Examples by Note Type
+### Map or MOC
 
-### MOC (Map of Content)
+Maps live in `Atlas/Maps`.
 
 ```yaml
 ---
 up:
   - "[[Home]]"
 related:
-  - "[[Adjacent MOC]]"
-created: 2026-01-15
+  - "[[Adjacent Map]]"
+created: 2026-05-01
 in:
   - "[[Maps]]"
 ---
 ```
 
-### Concept/Atomic Note
+### View
+
+Views are dynamic Dataview/search collection notes and usually live in `Atlas/Maps`.
 
 ```yaml
 ---
 up:
-  - "[[Parent MOC]]"
+  - "[[Home]]"
 related:
-  - "[[Related Concept]]"
-created: 2026-01-20
+  - "[[Maps]]"
+created: 2026-05-01
+in:
+  - "[[Views]]"
 ---
 ```
 
-### Daily Note (Calendar)
+### Thing or Concept Note
 
-```yaml
----
-created: 2026-01-22
----
-```
-
-### Project Note (Efforts)
+Durable ideas usually live in `Atlas/Dots/Things`.
 
 ```yaml
 ---
 up:
-  - "[[Efforts MOC]]"
+  - "[[Thinking Map]]"
 related: []
-created: 2026-01-10
+created: 2026-05-01
+in:
+  - "[[Concepts]]"
 ---
 ```
 
-## Key Rules
+### Statement Note
 
-1. **Quoted wikilinks in frontmatter**: `"[[Note Name]]"` - Keep quotes
-2. **Relationship properties are arrays**: Even single values should be `[item]`
-3. **Empty arrays are valid**: `related: []` explicitly shows "no lateral connections"
-4. **Do NOT use inline text patterns** like `Up: [[Note]]` in note body - use frontmatter only
-5. **No inline markdown in frontmatter values** - Keep values simple
+Claim-like evergreen notes usually live in `Atlas/Dots/Statements`.
 
-## Vault-Specific Extensions
+```yaml
+---
+up:
+  - "[[Relevant Map]]"
+related:
+  - "[[Related Thing]]"
+created: 2026-05-01
+---
+```
 
-Individual Ideaverse implementations may extend this core spec with additional properties. Common extensions include:
+### Source Note
 
-- `type:` - Note categorization
-- `status:` - Lifecycle stage
-- `tags:` - Additional categorical markers
-- `area:` - Domain or subject area
-- Domain-specific metadata fields
+Sources live in `Atlas/Dots/Sources` and should link to source collections.
 
-**These are optional** and should be documented in your specific vault implementation guide. The core Ideaverse requires only the relationship properties and `created:` date.
+```yaml
+---
+up:
+  - "[[Sources]]"
+related: []
+year: 2026
+encountered: 2026-05-01
+in:
+  - "[[Sources]]"
+---
+```
+
+For a book source, also include `[[Books]]` if that collection exists:
+
+```yaml
+in:
+  - "[[Sources]]"
+  - "[[Books]]"
+```
+
+### Effort Note
+
+Efforts live under `Efforts/On`, `Efforts/Ongoing`, `Efforts/Simmering`, or `Efforts/Sleeping`.
+
+```yaml
+---
+up:
+  - "[[Efforts]]"
+related: []
+created: 2026-05-01
+rank: 5
+---
+```
+
+### Daily or Dated Note
+
+Calendar notes should follow the vault's Daily Notes or Periodic Notes configuration.
+
+```yaml
+---
+created: 2026-05-01
+---
+```
+
+### Inbox Note in `+`
+
+Use minimal metadata for unprocessed capture. Add richer metadata when processing.
+
+```yaml
+---
+created: 2026-05-01
+---
+```
+
+## Rules
+
+1. Quote wikilinks in frontmatter: `"[[Note Name]]"`.
+2. Use arrays for relationship properties, even with one item.
+3. Prefer `in` over tags for collection membership in Lite 1.5.
+4. Do not put inline relationship labels such as `Up: [[Note]]` in the body when frontmatter can express the relationship.
+5. Match the existing note's property style when editing existing kit notes.
+6. Do not invent absent collection notes unless the user asks or the MOC workflow clearly requires them.
