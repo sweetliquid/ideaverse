@@ -25,8 +25,9 @@ from typing import List, Set
 import fnmatch
 import re
 
-# Shared constants
+# Shared constants for Ideaverse Lite 1.5.
 ROOT_NOTES = {'Home', 'Home Basic', 'Ideaverse Map'}
+SUPPORT_ROOTS = {'x'}
 WIKILINK_PATTERN = r'\[\[([^\]|]+)(?:\|[^\]]+)?\]\]'
 
 
@@ -52,6 +53,52 @@ def extract_wikilinks(content: str) -> List[str]:
 def extract_wikilinks_set(content: str) -> Set[str]:
     """Extract unique wikilinks from content as a set."""
     return set(extract_wikilinks(content))
+
+
+def _relative_parts(file_path: Path, vault_root: Path) -> List[str]:
+    """Return relative path parts, or an empty list for invalid paths."""
+    try:
+        return list(file_path.relative_to(vault_root).parts)
+    except (ValueError, AttributeError):
+        return []
+
+
+def is_lite15_support_path(file_path: Path, vault_root: Path) -> bool:
+    """Return True for Lite 1.5 support/toolbox content under x/."""
+    parts = _relative_parts(file_path, vault_root)
+    return bool(parts and parts[0] in SUPPORT_ROOTS)
+
+
+def is_lite15_inbox_path(file_path: Path, vault_root: Path) -> bool:
+    """Return True for the Lite 1.5 + inbox/cooling pad."""
+    parts = _relative_parts(file_path, vault_root)
+    return bool(parts and parts[0] == '+')
+
+
+def is_calendar_date_note(file_path: Path, vault_root: Path) -> bool:
+    """Return True for dated Calendar notes that can use minimal frontmatter."""
+    parts = _relative_parts(file_path, vault_root)
+    if not parts or parts[0] != 'Calendar':
+        return False
+    return bool(re.match(r'^\d{4}-\d{2}(-\d{2})?$', file_path.stem))
+
+
+def has_frontmatter_collection(content: str, collection: str) -> bool:
+    """Check simple YAML frontmatter collection membership, e.g. in: [[Maps]]."""
+    pattern = rf'(?ms)^in:[ \t]*(?:\n[ \t]*-[ \t]*["\']?\[\[{re.escape(collection)}\]\]["\']?|\[[^\n]*\[\[{re.escape(collection)}\]\][^\n]*\])'
+    return bool(re.search(pattern, content))
+
+
+def is_lite15_map_note(file_path: Path, vault_root: Path, content: str = '') -> bool:
+    """Return True for Lite 1.5 map/MOC/view notes."""
+    parts = _relative_parts(file_path, vault_root)
+    if len(parts) >= 2 and parts[0] == 'Atlas' and parts[1] == 'Maps':
+        return True
+
+    if content and (has_frontmatter_collection(content, 'Maps') or has_frontmatter_collection(content, 'Views')):
+        return True
+
+    return False
 
 
 def load_gitignore_patterns(vault_root: Path) -> List[str]:
@@ -330,6 +377,11 @@ def should_check_frontmatter(file_path: Path, vault_root: Path) -> bool:
         filename = file_path.name.lower()
     except (ValueError, AttributeError):
         # File outside vault or invalid path - exempt from frontmatter check
+        return False
+
+    # Lite 1.5 support/toolbox content may be templates, images, utility notes,
+    # or bundled project skill docs. Do not force knowledge-note frontmatter here.
+    if is_lite15_support_path(file_path, vault_root):
         return False
     
     # Patterns for files that don't need frontmatter

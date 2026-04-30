@@ -1,115 +1,91 @@
 ---
 name: ideaverse-maintenance
-description: Keep Ideaverse vaults healthy through audits, diagnostics, and maintenance workflows. Use when running vault diagnostics, detecting link rot, identifying orphan notes, finding MOC bloat, suggesting archival candidates, validating frontmatter, or generating vault health reports. Triggers on requests like "audit my vault", "find broken links", "check vault health", "what needs archiving", "find orphan notes", or "run maintenance".
+description: Audit and maintain an Ideaverse Lite 1.5 Obsidian vault. Use when checking broken links, orphan notes, dead ends, frontmatter, MOC bloat, squeeze points, stale Efforts, unprocessed + inbox notes, or overall vault health while preserving the Lite 1.5 folder contract.
 ---
 
-# Ideaverse Maintenance Skill
+# Ideaverse Lite 1.5 Maintenance
 
-Run audits, diagnostics, and maintenance workflows to keep Ideaverse-based Obsidian vaults healthy. Assume familiarity with the core Ideaverse methodology.
+Use this skill to keep an Ideaverse Lite 1.5 vault healthy without reshaping it into a generic Ideaverse layout.
+
+The Lite 1.5 folder contract:
+
+- `+` is the inbox/cooling pad and should be processed, not treated as extras.
+- `x` is the support/toolbox layer and should be excluded from knowledge health audits unless the user asks.
+- `Atlas/Maps` contains maps, MOCs, and views.
+- `Atlas/Dots` contains durable knowledge, sources, people, and statements.
+- `Calendar` contains dated records.
+- `Efforts` contains active, ongoing, simmering, or sleeping work.
+
+Before modifying an Obsidian vault, read the vault root `AGENTS.md` if it exists. Vault-local instructions override this skill.
 
 ## Requirements
 
-- Python 3.8 or later
-- No external dependencies (uses only Python standard library)
+- Python 3.8 or later.
+- No external Python dependencies.
+- Obsidian CLI is useful but optional.
 
-## Vault Health Diagnostics
+## Quick Health Check
 
-### Quick Health Check
-
-**Preferred (when Obsidian CLI is available):**
-
-Obsidian CLI provides native graph diagnostics that are faster and more accurate than script-based analysis:
+Prefer Obsidian CLI when Obsidian is open:
 
 ```bash
-# Orphan notes (no incoming links)
 obsidian orphans
-obsidian orphans total
-
-# Dead-end notes (no outgoing links)
 obsidian deadends
-obsidian deadends total
-
-# Unresolved links (broken wikilinks)
 obsidian unresolved
-obsidian unresolved total
-
-# Backlinks for a specific note
 obsidian backlinks file="Note Name"
 ```
 
-Use semantic search to suggest connections for orphan notes:
-```bash
-# Find related content for an orphan note
-qmd query "summary of the orphan note content"
-```
-
-**Fallback (Python scripts):**
-
-Run these in sequence for a complete vault audit. Scripts can be invoked directly (if executable) or via `python3`:
+If Obsidian CLI is unavailable, run the bundled scripts from this skill directory:
 
 ```bash
-# 1. Find broken links (critical)
-./scripts/find_broken_links.py /path/to/vault
-# or: python3 scripts/find_broken_links.py /path/to/vault
-
-# 2. Find orphan notes (structural)
-./scripts/find_orphans.py /path/to/vault
-
-# 3. Check frontmatter compliance (consistency)
-./scripts/check_frontmatter.py /path/to/vault
-
-# 4. Detect MOC bloat (scale)
-./scripts/detect_moc_bloat.py /path/to/vault
-
-# 5. Find squeeze points (opportunities)
-./scripts/validate_squeeze_points.py /path/to/vault
-
-# 6. Suggest archival candidates (hygiene)
-./scripts/suggest_archival.py /path/to/vault
+python3 scripts/find_broken_links.py /path/to/vault
+python3 scripts/find_orphans.py /path/to/vault
+python3 scripts/check_frontmatter.py /path/to/vault --strict
+python3 scripts/detect_moc_bloat.py /path/to/vault
+python3 scripts/validate_squeeze_points.py /path/to/vault
+python3 scripts/suggest_archival.py /path/to/vault
 ```
 
-> **Note:** If `python3` is not available on your system, use `python` if it points to Python 3.x.
+Do not assume QMD is installed. Use semantic search tools only when the user has explicitly configured them.
 
-### Script Descriptions
+## Script Behavior
 
-| Script | Purpose | Output |
-|--------|---------|--------|
-| `find_broken_links.py` | Discover wikilinks pointing to non-existent notes | List of source files with broken links |
-| `find_orphans.py` | Identify notes with no incoming links | List of orphan note paths |
-| `check_frontmatter.py` | Verify required properties (up, created) | Issues grouped by type |
-| `detect_moc_bloat.py` | Find MOCs with 50+ direct links | MOCs sorted by link count |
-| `validate_squeeze_points.py` | Find unstructured clusters needing MOCs | Terms linked 10+ times without MOC |
-| `suggest_archival.py` | Identify stale notes for archival consideration | Notes sorted by staleness indicators |
+The scripts are Lite 1.5 aware:
 
-All scripts accept a vault path argument and return structured output. Exit code 0 = healthy, 1 = issues found.
+- Hidden agent/tool folders such as `.agents` are excluded.
+- `x/Templates`, `x/Images`, `x/Excalidraw`, and other support paths are excluded from frontmatter expectations.
+- `+` is included because inbox notes should eventually be processed.
+- `Atlas/Maps` and `in: [[Maps]]` are treated as map indicators.
+- Calendar date notes are allowed to have minimal frontmatter.
+- No script should recommend creating `+ Extras` or `Calendar/Days`.
 
-## Maintenance Cadences
+## Cadence
 
-### Daily (5 minutes)
-- Review today's daily log for unprocessed fleeting notes
-- Quick scan for any broken links introduced today
+### Lightweight Weekly Sweep
 
-### Weekly (15-30 minutes)
-- Run `find_broken_links.py` and fix any issues
-- Run `find_orphans.py` - triage: link, archive, or delete
-- Spot-check frontmatter on recently created notes
+1. Check broken links.
+2. Check `+` for stale unprocessed captures.
+3. Spot-check new notes for `created`, `up`, and `in` where appropriate.
+4. Review orphan notes and decide whether to link, keep in `+`, or delete.
 
-### Monthly (1-2 hours)
-- Full diagnostic suite (all 6 scripts)
-- Review MOC bloat - split any MOCs over 50 links
-- Process squeeze points - create MOCs where warranted
-- Review archival suggestions - archive confirmed stale notes
-- Generate and save vault health report
+### Monthly Sweep
 
-### Quarterly (Half day)
-- Comprehensive vault audit
-- Review and clean Archive folder
-- Assess MOC hierarchy - simplify or restructure as needed
-- Update any vault-level documentation
+1. Run all bundled scripts.
+2. Review map bloat in `Atlas/Maps`.
+3. Review squeeze points and create maps only when structure is earned.
+4. Review `Efforts/On` and `Efforts/Simmering` for items that should move to `Efforts/Sleeping`.
+5. Extract reusable knowledge from Efforts and Calendar into Atlas.
+
+## What To Do With Findings
+
+- Broken links: fix target names, create missing notes only when the note should exist, or remove stale links.
+- Orphans: link to a relevant map, keep in `+` for processing, or delete if disposable.
+- Frontmatter issues: add `created`, `up`, and `in` according to Lite 1.5 conventions.
+- MOC bloat: split only when the map is genuinely hard to navigate.
+- Squeeze points: consider a new map in `Atlas/Maps`, but do not create empty taxonomy.
+- Stale work: move Efforts between `On`, `Ongoing`, `Simmering`, and `Sleeping`; do not invent an Archive folder by default.
 
 ## Deep Dives
 
-Use reference docs for detailed decision trees, workflows, and maintenance playbooks:
-
-- [references/vault-hygiene.md](references/vault-hygiene.md) - Hygiene workflows, cadences, and reporting
-- [references/troubleshooting.md](references/troubleshooting.md) - Diagnosis and resolution guides
+- [references/vault-hygiene.md](references/vault-hygiene.md)
+- [references/troubleshooting.md](references/troubleshooting.md)

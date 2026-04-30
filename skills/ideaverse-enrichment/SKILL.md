@@ -1,394 +1,153 @@
 ---
 name: ideaverse-enrichment
-description: Systematically add new knowledge to Ideaverse vaults while maintaining consistency. Use when assimilating new information, extracting concepts from sources, processing research, integrating learned knowledge, detecting duplicates, or classifying knowledge types. Triggers on requests like "add this to my vault", "process this article", "integrate this knowledge", "what type of knowledge is this", or "check for duplicates".
+description: Add new knowledge to an Ideaverse Lite 1.5 Obsidian vault without breaking the Lite 1.5 folder contract. Use when processing articles, books, videos, research, copied text, meeting takeaways, links, or user-provided ideas into notes; when checking for duplicates; or when deciding whether material belongs in +, Calendar, Atlas/Dots, Atlas/Maps, Sources, People, or Efforts.
 ---
 
-# Ideaverse Enrichment Skill
+# Ideaverse Lite 1.5 Enrichment
 
-Use the ARC enrichment workflow to add new knowledge while maintaining consistency, detecting duplicates, and choosing appropriate structures. Assume familiarity with the core Ideaverse methodology.
+Use this skill to absorb new material into an Ideaverse Lite 1.5 vault. It assumes the core `ideaverse` skill's Lite 1.5 mapping:
 
-## The ARC Enrichment Workflow
+- `+` is the Add inbox/cooling pad.
+- `x` is the extras/toolbox support layer.
+- `Atlas/Maps` holds maps, MOCs, and views.
+- `Atlas/Dots/Things` holds reusable concepts, methods, definitions, and explanations.
+- `Atlas/Dots/Statements` holds claim-like evergreen statements.
+- `Atlas/Dots/Sources` holds source notes.
+- `Atlas/Dots/People` holds people notes.
+- `Calendar` holds dated notes and logs.
+- `Efforts` holds active or paused work.
 
-All knowledge enrichment follows the ARC pattern: **Add → Relate → Communicate**.
+Before modifying an Obsidian vault, read the vault root `AGENTS.md` if it exists. Vault-local instructions override this skill.
 
-### Phase 1: ADD (Capture Without Friction)
+## Enrichment Contract
 
-```
-1. Capture the raw information quickly
-   ├── To daily log (if temporal)
-   ├── To fleeting note (if needs processing)
-   └── Direct to Atlas (if clearly permanent)
+When adding knowledge:
 
-2. Include source attribution
-   └── Where did this come from?
+1. Search first.
+2. Preserve source attribution.
+3. Use `+` for ambiguous raw capture.
+4. Extract durable knowledge into `Atlas/Dots`, not `x`.
+5. Update maps in `Atlas/Maps` only when navigation improves.
+6. Use Lite 1.5 frontmatter with `up`, `related`, `created`, and usually `in`.
+7. Do not create `+ Extras`, `Calendar/Days`, generic Archive folders, or new taxonomy folders unless the user asks.
 
-3. Don't organize yet
-   └── Processing happens in RELATE phase
-```
+## ARC Enrichment Workflow
 
-**Key principle**: Speed of capture matters. Don't let organization concerns prevent getting ideas into the system.
+### 1. Add
 
-### Phase 2: RELATE (Connect & Integrate)
+Capture the raw material with the least destructive placement:
 
-This is where enrichment quality is determined.
+- Time-bound context, meeting notes, and today-specific observations go to `Calendar`.
+- Unprocessed clips, mixed ideas, and uncertain material go to `+`.
+- Clearly reusable concepts can go directly to `Atlas/Dots/Things`.
+- External sources can go to `Atlas/Dots/Sources`.
+- Active-work material can go to the relevant `Efforts` note or `Efforts/Notes`.
 
-```
-Step 2.1: Search Before Creating (use vault search tools - see Duplicate Detection)
-    ↓
-    ├── Search for existing notes on this concept
-    ├── Check related MOCs for similar ideas
-    └── If exists → Update existing note instead
+Always record where the material came from: URL, title, author, date encountered, page, timestamp, or the user's prompt context.
 
-Step 2.2: Classify Knowledge Type
-    ↓
-    ├── Concept? → Use concept extraction pattern
-    ├── Process? → Use process documentation pattern
-    ├── Entity? → Use entity profile pattern
-    └── Principle? → Use principle articulation pattern
+### 2. Relate
 
-Step 2.3: Extract Atomic Notes
-    ↓
-    ├── One note per distinct concept
-    ├── Keep notes focused and atomic
-    └── Add proper frontmatter (up, related, created)
+Before creating durable notes:
 
-Step 2.4: Establish Connections
-    ↓
-    ├── Set up: property to relevant MOC
-    ├── Add related: links to connected concepts
-    ├── Add note to parent MOC
-    └── Add back-links from related notes
+1. Search exact title and likely aliases.
+2. Search `Atlas/Maps` for likely parent maps.
+3. Check `Atlas/Dots/Sources` for an existing source note.
+4. Decide the extraction type:
+   - concept or method -> `Atlas/Dots/Things`
+   - claim or principle -> `Atlas/Dots/Statements`
+   - source -> `Atlas/Dots/Sources`
+   - person -> `Atlas/Dots/People`
+   - effort-specific support -> `Efforts/Notes`
+5. Update an existing note if it already covers the same idea.
+6. Create a new note only when the idea is distinct enough to reuse.
 
-Step 2.5: Validate Consistency
-    ↓
-    ├── Frontmatter complete?
-    ├── Links working?
-    └── No duplicates created?
-```
+### 3. Communicate
 
-### Phase 3: COMMUNICATE (Express & Use)
+After enrichment:
 
-```
-1. Use new knowledge in output
-   ├── Reference in daily logs
-   ├── Include in projects
-   └── Build on for future work
+- Link extracted notes from their source note or dated context.
+- Add a map entry only when the note improves that map.
+- Mention the enrichment in today's Calendar note only when that note exists or the user wants an activity log.
 
-2. Track completion
-   └── Note in daily log that enrichment happened
-```
+## Knowledge Types
 
-## Knowledge Classification
+Use these placement defaults:
 
-Different types of knowledge require different structures. Classify before extracting.
+| Type | What It Is | Default Folder | Typical `in` |
+| --- | --- | --- | --- |
+| Concept | reusable idea, framework, definition, method | `Atlas/Dots/Things` | `[[Concepts]]` when appropriate |
+| Statement | claim, principle, evergreen assertion | `Atlas/Dots/Statements` | usually parent-map driven |
+| Process | repeatable workflow or how-to | `Atlas/Dots/Things` | `[[Concepts]]` or a domain map |
+| Entity | tool, organization, product, place | `Atlas/Dots/Things` or a specific existing folder | existing collection if present |
+| Person | person profile or relationship note | `Atlas/Dots/People` | `[[People Map]]` if appropriate |
+| Source | book, article, paper, video, site | `Atlas/Dots/Sources` | `[[Sources]]`, plus `[[Books]]`, `[[Papers]]`, etc. |
+| Effort material | notes useful mainly for a current responsibility | `Efforts/Notes` | effort-specific |
 
-### Type 1: Concepts
+For templates and examples, read:
 
-**What**: Abstract ideas, frameworks, mental models, theories
-
-**Characteristics**:
-- Stands alone as an idea
-- Has relationships to other concepts
-- Can be applied across domains
-
-**Structure pattern**:
-```markdown
-# [Concept Name]
-
-Brief definition in 1-2 sentences.
-
-## Core Idea
-What is this concept fundamentally about?
-
-## Key Principles
-- Principle 1
-- Principle 2
-
-## Connections
-How does this relate to [[Related Concept]]?
-
-## Applications
-Where/when does this apply?
-
-## Examples
-Concrete instances of this concept.
-```
-
-**Use the prompt**: `ideaverse-enrichment-concepts.prompt`
-
-### Type 2: Processes
-
-**What**: Procedures, workflows, how-to knowledge, sequences
-
-**Characteristics**:
-- Has steps or phases
-- Produces an outcome
-- Can be followed repeatedly
-
-**Structure pattern**:
-```markdown
-# [Process Name]
-
-Brief description of what this process accomplishes.
-
-## When to Use
-Triggers or conditions for this process.
-
-## Prerequisites
-What's needed before starting?
-
-## Steps
-1. Step one
-2. Step two
-3. Step three
-
-## Decision Points
-If [condition], then [action].
-
-## Common Variations
-Alternative approaches when [situation].
-
-## Failure Modes
-What can go wrong and how to recover.
-```
-
-**Use the prompt**: `ideaverse-enrichment-processes.prompt`
-
-### Type 3: Entities
-
-**What**: People, organizations, tools, products, places
-
-**Characteristics**:
-- Specific instance, not abstract
-- Has attributes and relationships
-- Changes over time
-
-**Structure pattern**:
-```markdown
-# [Entity Name]
-
-Brief one-line description.
-
-## Identity
-What/who is this? Core attributes.
-
-## Relationships
-- Connected to [[Person/Org]]
-- Uses [[Tool]]
-- Part of [[System]]
-
-## Context
-Role, function, or purpose in your world.
-
-## History
-Key events, changes, timeline (if relevant).
-
-## Notes
-Additional observations.
-```
-
-**Use the prompt**: `ideaverse-enrichment-entities.prompt`
-
-### Type 4: Principles
-
-**What**: Rules, heuristics, guidelines, maxims
-
-**Characteristics**:
-- Prescriptive (tells you what to do)
-- Has conditions of application
-- May have exceptions
-
-**Structure pattern**:
-```markdown
-# [Principle Name]
-
-The principle stated clearly in one sentence.
-
-## Definition
-What does this principle mean in practice?
-
-## When It Applies
-Conditions where this principle is relevant.
-
-## How to Apply
-Practical guidance for using this principle.
-
-## Counter-Examples
-When does this NOT apply? What are the exceptions?
-
-## Why It Matters
-The reasoning behind this principle.
-
-## Related Principles
-- [[Similar Principle]]
-- [[Contrasting Principle]]
-```
-
-**Use the prompt**: `ideaverse-enrichment-principles.prompt`
+- [references/knowledge-classification.md](references/knowledge-classification.md)
+- [references/extraction-templates.md](references/extraction-templates.md)
 
 ## Duplicate Detection
 
-Before creating any new note, check for existing coverage.
+Use search in this order:
 
-### Search Strategy
+1. Obsidian CLI, if available: `obsidian search query="term"` and `obsidian backlinks file="Note Name"`.
+2. Filesystem fallback: `rg -n "term" Atlas Calendar Efforts +`.
+3. Manual map review: inspect likely maps in `Atlas/Maps`.
 
-**Preferred (when vault search tools are available):**
-
-Default to vault-native search tools (e.g., QMD) for deduplication. They are indexed and faster than filesystem grep or general-purpose search. Only fall back to filesystem search if vault search tools are unavailable or return errors.
-
-Use keyword search for exact title matching:
-```bash
-# Exact title/name match
-qmd search "concept name"
-```
-
-Use semantic search for conceptual near-duplicates:
-```bash
-# Find notes discussing similar ideas, even with different titles
-qmd query "what is [concept] and how does it apply"
-```
-
-Use graph tools to check existing coverage:
-```bash
-# Check what already links to related concepts
-obsidian backlinks file="Related Concept"
-```
-
-**Fallback (any environment):**
-
-```
-1. Exact match search
-   └── Search: [[concept name]]
-
-2. Synonym search
-   └── What other terms describe this?
-
-3. MOC review
-   └── Browse relevant MOC for similar concepts
-
-4. Semantic scan
-   └── What notes discuss related ideas?
-```
-
-### Duplicate Resolution
+Do not assume QMD exists. Use it only if the user has explicitly configured it or asks for it.
 
 When a duplicate is found:
 
-```
-If new info < existing info:
-    └── Add link to existing, don't create new
+- If new material is smaller than the existing note, update or link the existing note.
+- If it supplements the existing note, merge the new insight into the existing note.
+- If it is a neighboring but distinct idea, create a separate note and link through `related`.
+- If uncertain, capture in `+` with a short dedup note.
 
-If new info supplements existing:
-    └── Update existing note with new info
+Read [references/duplicate-detection.md](references/duplicate-detection.md) for the detailed merge process.
 
-If notes are genuinely different:
-    └── Create separate notes, add related: links
+## Common Enrichment Workflows
 
-If unclear:
-    └── Create new note, flag for later dedup review
-```
+### Article, Book, Video, or Web Page
 
-### Merge Process
+1. Create or update a source note in `Atlas/Dots/Sources`.
+2. Add source metadata and a short summary.
+3. Extract 1-5 durable ideas.
+4. Create or update notes in `Atlas/Dots/Things` or `Atlas/Dots/Statements`.
+5. Link extracted notes from the source note.
+6. Add source collection membership through `in`, such as `[[Sources]]`, `[[Books]]`, or `[[Papers]]`.
 
-When consolidating duplicates:
+### User Idea or Conversation
 
-```
-1. Choose primary note (better structured/more complete)
-2. Copy unique content from secondary to primary
-3. Update links pointing to secondary → point to primary
-4. Update MOCs to reference only primary
-5. Delete secondary (or archive if uncertain)
-```
+1. If raw and ambiguous, capture in `+`.
+2. If stable and reusable, create/update `Atlas/Dots/Things`.
+3. If it is about how the vault works, prefer `Atlas/Dots/Things` with `up: [[Meta PKM]]`.
+4. If it is action-oriented, create/update an Effort instead of forcing it into Atlas.
 
-## Enrichment Workflows
+### Research Batch
 
-### Workflow: Article/Book Processing
+1. Keep a temporary synthesis in `+` or `Efforts/Notes`.
+2. Create source notes for durable references.
+3. Extract atomic reusable notes.
+4. Update or create a MOC in `Atlas/Maps` only when structure is earned.
+5. Leave the synthesis note in place only if it remains useful as a map or work note.
 
-```
-1. Read/consume the source
-    ↓
-2. Capture key ideas to daily log
-    - Use bullet points
-    - Note source and page/location
-    ↓
-3. Identify distinct concepts (usually 2-5 per article)
-    ↓
-4. For each concept:
-    a. Classify type (concept/process/entity/principle)
-    b. Check for existing notes
-    c. Create or update note
-    d. Add to relevant MOC
-    ↓
-5. Create source note (optional)
-    - Link to all extracted concepts
-    - Add to Sources MOC
-```
+## Validation Checklist
 
-### Workflow: Experience Processing
+Before enrichment is complete:
 
-```
-1. Capture raw thoughts/observations
-    ↓
-2. Let it sit (optional - allows reflection)
-    ↓
-3. Identify the generalizable insight
-    - What can I learn from this that applies elsewhere?
-    ↓
-4. Extract as principle or concept note
-    ↓
-5. Link to specific experience in daily log
-```
+- [ ] Existing notes were searched first.
+- [ ] Source attribution is present.
+- [ ] Durable knowledge is in `Atlas/Dots`, not `x`.
+- [ ] Ambiguous capture is in `+`.
+- [ ] Maps were updated only when useful.
+- [ ] Frontmatter follows Lite 1.5 conventions.
+- [ ] No `+ Extras` or `Calendar/Days` path was introduced.
 
-### Workflow: Research Integration
+## References
 
-```
-1. Gather sources on topic
-    ↓
-2. Create temporary synthesis note
-    - List all sources
-    - Note key points from each
-    ↓
-3. Identify gaps in existing vault knowledge
-    ↓
-4. Create atomic notes to fill gaps
-    ↓
-5. Update relevant MOC with new structure
-    ↓
-6. Archive or keep synthesis note as overview
-```
-
-## Best Practices
-
-### Quality Over Quantity
-- Better to have 10 well-linked notes than 100 orphans
-- Take time in the RELATE phase
-- Verify connections are meaningful
-
-### Source Attribution
-- Always note where knowledge came from
-- Makes future verification possible
-- Helps trace your thinking
-
-### Incremental Enrichment
-- Don't try to capture everything at once
-- Regular small additions beat occasional large dumps
-- Let structure emerge naturally
-
-### Validation Checklist
-
-Before considering enrichment complete:
-- [ ] Frontmatter has `up:` and `created:`
-- [ ] Note added to relevant MOC
-- [ ] At least one related: link if applicable
-- [ ] No broken links introduced
-- [ ] No duplicate created (or duplicates merged)
-
-## Reference Documentation
-
-For detailed patterns and extraction templates, see:
-- [references/enrichment-workflow.md](references/enrichment-workflow.md) - Complete ARC workflow details
-- [references/knowledge-classification.md](references/knowledge-classification.md) - Deep dive on knowledge types
-- [references/extraction-templates.md](references/extraction-templates.md) - Type-specific extraction templates, guidelines, and quality signals
-- [references/duplicate-detection.md](references/duplicate-detection.md) - Finding and handling duplicates
-
-All extraction workflows are contained within this skill—no external prompts needed.
+- [references/enrichment-workflow.md](references/enrichment-workflow.md)
+- [references/knowledge-classification.md](references/knowledge-classification.md)
+- [references/extraction-templates.md](references/extraction-templates.md)
+- [references/duplicate-detection.md](references/duplicate-detection.md)

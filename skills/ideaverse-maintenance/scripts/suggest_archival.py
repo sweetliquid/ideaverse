@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Suggest notes for archival based on staleness indicators.
+Suggest notes for Lite 1.5 review based on staleness indicators.
 
 Usage:
     ./suggest_archival.py [vault_path] [--days N] [--json]
@@ -10,6 +10,7 @@ Staleness indicators:
 - No modifications in N days (default: 180)
 - Few/no outgoing links (isolated content)
 - Located in Efforts/ and potentially complete
+- Located in + and still unprocessed
 - Minimal content (< 100 words)
 
 This script audits only vault content, excluding:
@@ -23,12 +24,18 @@ import sys
 import json
 from pathlib import Path
 from datetime import datetime, timedelta
-from vault_utils import load_gitignore_patterns, is_vault_content, extract_wikilinks
+from vault_utils import (
+    extract_wikilinks,
+    is_lite15_inbox_path,
+    is_lite15_support_path,
+    is_vault_content,
+    load_gitignore_patterns,
+)
 import argparse
 
 def get_args():
     parser = argparse.ArgumentParser(
-        description='Suggest notes for archival based on staleness indicators.'
+        description='Suggest Ideaverse Lite 1.5 notes for review based on staleness indicators.'
     )
     parser.add_argument(
         'vault_path',
@@ -82,13 +89,8 @@ def is_in_efforts(file_path, vault_path):
     rel_path = file_path.relative_to(vault_path)
     return str(rel_path).startswith('Efforts')
 
-def is_already_archived(file_path, vault_path):
-    """Check if file is already in an archive folder."""
-    rel_path = str(file_path.relative_to(vault_path)).lower()
-    return 'archive' in rel_path
-
 def calculate_staleness_score(note_info, stale_days):
-    """Calculate staleness score (higher = more likely to archive)."""
+    """Calculate review score (higher = more likely to need attention)."""
     score = 0
     reasons = []
     
@@ -119,6 +121,10 @@ def calculate_staleness_score(note_info, stale_days):
     if note_info['in_efforts']:
         score += 10
         reasons.append("in Efforts/")
+
+    if note_info['in_inbox']:
+        score += 20
+        reasons.append("in + inbox")
     
     return score, reasons
 
@@ -128,20 +134,13 @@ def suggest_archival(vault_path, stale_days):
     now = datetime.now()
     candidates = []
     
-    # Skip certain folders entirely
-    skip_patterns = {'Templates', 'templates', 'Archive', 'archive', 'Archived'}
-    
     for md_file in vault.rglob('*.md'):
         # Skip ignored and non-vault content
         if not is_vault_content(md_file, vault, ignore_patterns):
             continue
-        
-        # Skip already archived
-        if is_already_archived(md_file, vault_path):
-            continue
-        
-        # Skip templates and special folders
-        if any(pattern in str(md_file) for pattern in skip_patterns):
+
+        # Skip Lite 1.5 support/toolbox content.
+        if is_lite15_support_path(md_file, vault):
             continue
         
         try:
@@ -156,7 +155,8 @@ def suggest_archival(vault_path, stale_days):
                 'last_modified': mod_date.strftime('%Y-%m-%d'),
                 'word_count': count_words(content),
                 'outgoing_links': count_outgoing_links(content),
-                'in_efforts': is_in_efforts(md_file, vault_path)
+                'in_efforts': is_in_efforts(md_file, vault_path),
+                'in_inbox': is_lite15_inbox_path(md_file, vault)
             }
             
             score, reasons = calculate_staleness_score(note_info, stale_days)
@@ -187,10 +187,10 @@ def main():
         sys.exit(0)
     
     if not candidates:
-        print(f"No archival candidates found (stale threshold: {args.stale_days} days).")
+        print(f"No review candidates found (stale threshold: {args.stale_days} days).")
         sys.exit(0)
     
-    print(f"Found {len(candidates)} potential archival candidate(s):\n")
+    print(f"Found {len(candidates)} potential review candidate(s):\n")
     
     # Group by score ranges
     high = [c for c in candidates if c['staleness_score'] >= 60]
@@ -220,8 +220,10 @@ def main():
     if low:
         print(f"🟢 Low priority (score 30-39): {len(low)} notes\n")
     
-    print("Recommendation: Review high-priority candidates for archival.")
-    print("Before archiving, extract any reusable knowledge to Atlas/.")
+    print("Recommendation: Review high-priority candidates.")
+    print("For Efforts, prefer moving between On/Ongoing/Simmering/Sleeping.")
+    print("For + inbox notes, process into Atlas, Calendar, Efforts, or delete.")
+    print("Extract reusable knowledge to Atlas/Dots before deleting or moving work out of focus.")
 
 if __name__ == '__main__':
     main()

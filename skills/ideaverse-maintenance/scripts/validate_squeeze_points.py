@@ -15,13 +15,11 @@ This script audits only vault content, excluding:
 - Other non-vault content matching .gitignore
 """
 
-import os
-import re
 import sys
 import json
 from pathlib import Path
 from collections import defaultdict
-from vault_utils import load_gitignore_patterns, is_vault_content, extract_wikilinks
+from vault_utils import load_gitignore_patterns, is_lite15_map_note, is_vault_content, extract_wikilinks
 import argparse
 
 def get_args():
@@ -68,10 +66,6 @@ def is_moc(note_name, file_path, existing_mocs):
     """Check if a note is an MOC."""
     if note_name in existing_mocs:
         return True
-    if 'MOC' in note_name or note_name.endswith(' Map'):
-        return True
-    if 'Maps' in str(file_path):
-        return True
     return False
 
 def find_existing_mocs(vault_path):
@@ -84,15 +78,10 @@ def find_existing_mocs(vault_path):
         if not is_vault_content(md_file, vault, ignore_patterns):
             continue
         
-        name = md_file.stem
-        if 'MOC' in name or name.endswith(' Map') or 'Maps' in str(md_file):
-            mocs.add(name)
-        
-        # Also check frontmatter for 'in: [[Maps]]'
         try:
             content = md_file.read_text(encoding='utf-8')
-            if re.search(r'in:\s*\n\s*-\s*["\']?\[\[Maps\]\]["\']?', content):
-                mocs.add(name)
+            if is_lite15_map_note(md_file, vault, content):
+                mocs.add(md_file.stem)
         except:
             pass
     
@@ -199,8 +188,8 @@ def main():
             print(f"        ... and {sp['total_sources'] - 5} more")
         print()
     
-    print("Recommendation: Create MOCs for these terms to improve navigation.")
-    print("Follow the MOC creation workflow in the ideaverse skill.")
+    print("Recommendation: Consider maps in Atlas/Maps only when navigation is genuinely painful.")
+    print("Follow the Lite 1.5 MOC creation workflow in the ideaverse skill.")
     
     sys.exit(1 if squeeze_points else 0)
 

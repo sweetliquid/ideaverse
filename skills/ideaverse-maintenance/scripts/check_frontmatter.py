@@ -6,10 +6,11 @@ Usage:
     ./check_frontmatter.py [vault_path] [--strict] [--json]
     python3 check_frontmatter.py [vault_path] [--strict] [--json]
 
-Checks for:
+Lite 1.5 checks:
 - Missing 'up:' property (except for Home and root notes)
 - Missing 'created:' date
-- MOCs missing 'in:' property (strict mode)
+- Maps/Views missing 'in:' property (strict mode)
+- Support files under x/ are exempt from knowledge-note frontmatter rules
 
 This script audits only vault content, excluding:
 - node_modules/ directories (package dependencies)
@@ -21,7 +22,15 @@ import re
 import sys
 import json
 from pathlib import Path
-from vault_utils import load_gitignore_patterns, is_vault_content, should_check_frontmatter, ROOT_NOTES
+from vault_utils import (
+    ROOT_NOTES,
+    is_calendar_date_note,
+    is_lite15_inbox_path,
+    is_lite15_map_note,
+    is_vault_content,
+    load_gitignore_patterns,
+    should_check_frontmatter,
+)
 import argparse
 
 def get_args():
@@ -72,9 +81,9 @@ def parse_frontmatter(content):
             continue
         
         # Check for list item
-        if line.startswith('  - '):
+        if re.match(r'^\s*-\s+', line):
             if current_key and current_list is not None:
-                current_list.append(line[4:].strip().strip('"'))
+                current_list.append(re.sub(r'^\s*-\s+', '', line).strip().strip('"'))
             continue
         
         # Check for key: value or key:
@@ -132,11 +141,13 @@ def check_frontmatter(vault_path, strict=False):
                     'severity': 'warning'
                 })
             
-            # Check: Missing 'up' property (except root notes and daily logs)
+            # Check: Missing 'up' property (except root notes, dated Calendar notes,
+            # and unprocessed + inbox captures)
             is_root = note_name in ROOT_NOTES
-            is_daily = 'Calendar' in rel_path and re.match(r'\d{4}-\d{2}-\d{2}', note_name)
+            is_daily = is_calendar_date_note(md_file, vault)
+            is_inbox = is_lite15_inbox_path(md_file, vault)
             
-            if not is_root and not is_daily:
+            if not is_root and not is_daily and not is_inbox:
                 up_val = props.get('up', [])
                 if not up_val or (isinstance(up_val, list) and len(up_val) == 0):
                     issues.append({
@@ -145,15 +156,14 @@ def check_frontmatter(vault_path, strict=False):
                         'severity': 'warning'
                     })
             
-            # Check: MOCs should have 'in' property (strict mode)
+            # Check: maps/views should have 'in' property (strict mode)
             if strict:
-                is_moc = 'MOC' in note_name or 'Map' in note_name or 'Maps' in rel_path
-                if is_moc:
+                if is_lite15_map_note(md_file, vault, content):
                     in_val = props.get('in', [])
                     if not in_val or (isinstance(in_val, list) and len(in_val) == 0):
                         issues.append({
                             'path': rel_path,
-                            'issue': "MOC missing 'in' property",
+                            'issue': "map/view missing 'in' property",
                             'severity': 'info'
                         })
         

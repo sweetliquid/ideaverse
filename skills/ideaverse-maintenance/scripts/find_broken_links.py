@@ -87,7 +87,7 @@ def main():
     # Group by source file
     by_source = {}
     for source, link in broken:
-        rel_path = str(source.relative_to(vault_path))
+        rel_path = str(source.relative_to(args.vault_path))
         if rel_path not in by_source:
             by_source[rel_path] = []
         by_source[rel_path].append(link)

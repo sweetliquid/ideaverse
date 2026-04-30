@@ -15,12 +15,10 @@ This script audits only vault content, excluding:
 - Other non-vault content matching .gitignore
 """
 
-import os
-import re
 import sys
 import json
 from pathlib import Path
-from vault_utils import load_gitignore_patterns, is_vault_content, extract_wikilinks_set
+from vault_utils import load_gitignore_patterns, is_lite15_map_note, is_vault_content, extract_wikilinks_set
 import argparse
 
 def get_args():
@@ -48,24 +46,6 @@ def get_args():
     )
     return parser.parse_args()
 
-def is_moc(file_path, content):
-    """Determine if a note is a Map of Content."""
-    name = file_path.stem
-    
-    # Check name patterns
-    if 'MOC' in name or name.endswith(' Map'):
-        return True
-    
-    # Check if it's in a Maps folder
-    if 'Maps' in str(file_path):
-        return True
-    
-    # Check frontmatter for 'in: [[Maps]]' pattern
-    if re.search(r'in:\s*\n\s*-\s*["\']?\[\[Maps\]\]["\']?', content):
-        return True
-    
-    return False
-
 def detect_moc_bloat(vault_path, threshold):
     vault = Path(vault_path)
     ignore_patterns = load_gitignore_patterns(vault)
@@ -79,7 +59,7 @@ def detect_moc_bloat(vault_path, threshold):
         try:
             content = md_file.read_text(encoding='utf-8')
             
-            if not is_moc(md_file, content):
+            if not is_lite15_map_note(md_file, vault, content):
                 continue
             
             links = extract_wikilinks_set(content)
@@ -135,7 +115,7 @@ def main():
             print(f"  {r['path']}: {r['link_count']} links")
         print()
     
-    print("Recommendation: Split bloated MOCs into focused child MOCs.")
+    print("Recommendation: Split bloated maps into focused child maps in Atlas/Maps only when navigation improves.")
     
     sys.exit(1 if bloated else 0)
 

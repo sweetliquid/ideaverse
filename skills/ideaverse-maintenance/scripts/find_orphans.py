@@ -86,7 +86,7 @@ def main():
     
     print(f"Found {len(orphans)} orphan note(s):\n")
     for name, path in orphans:
-        rel_path = path.relative_to(vault_path)
+        rel_path = path.relative_to(args.vault_path)
         print(f"  - {rel_path}")
     
     sys.exit(1 if orphans else 0)
